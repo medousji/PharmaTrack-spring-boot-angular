@@ -116,7 +116,6 @@ pharma-track/
 ├── frontend/         # Angular (pages, layout, guards de rôles, interceptor HTTP)
 ├── docs/             # ADR / documentation
 ├── screenshots/      # Captures d'écran de l'application
-├── legacy-source/    # Sources héritées (style beige Laravel de référence)
 ├── docker-compose.yml
 ├── .env.example
 └── .gitignore
