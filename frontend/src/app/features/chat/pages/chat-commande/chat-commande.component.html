@@ -1,0 +1,84 @@
+<div class="page thread-page">
+  <div class="thread-head">
+    <a class="btn back" routerLink="/chat">← Messagerie</a>
+    @if (thread) {
+      <div class="thread-title">
+        <h1>{{ thread.commande.numeroCommande }}</h1>
+        <span class="role">{{ thread.commande.fournisseurNom }}</span>
+      </div>
+    }
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (thread) {
+    <div class="cmd-card">
+      <div class="cmd-meta">
+        <app-status-pill [label]="statutLabel(thread.commande.statut)" [tone]="statutTone(thread.commande.statut)" />
+        <span class="meta-item">Passée le {{ thread.commande.dateCommande }}</span>
+        <span class="meta-item">Livraison prévue {{ dateLivraison(thread.commande.dateLivraisonPrevue) }}</span>
+        <span class="meta-item"><b>{{ thread.commande.totalTtc | number: '1.0-3' }} TND</b> TTC</span>
+      </div>
+      <table class="lines">
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>Qté</th>
+            <th>Prix unitaire</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of thread.commande.lignes; track l.id) {
+            <tr>
+              <td>{{ l.medicamentNom }}</td>
+              <td>{{ l.quantite }}</td>
+              <td>{{ l.prixUnitaire | number: '1.0-3' }} TND</td>
+              <td>{{ l.totalLigne | number: '1.0-3' }} TND</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="empty">Aucune ligne.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="messages">
+      @for (m of thread.messages; track m.id) {
+        <div class="bubble-wrap" [class.mine]="mine(m)">
+          <div class="bubble" [class.mine]="mine(m)">
+            <div class="bubble-content">{{ m.message }}</div>
+            <div class="bubble-meta">
+              <span class="author">{{ m.expediteurNom }}</span>
+              <span class="time">{{ m.createdAt | date: 'dd/MM HH:mm' }}</span>
+              @if (mine(m)) {
+                <span class="read">{{ m.estLu ? 'lu' : 'envoyé' }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <p class="empty">Aucun message. Écrivez au fournisseur pour lancer l'échange.</p>
+      }
+    </div>
+
+    <div class="composer">
+      <textarea
+        rows="2"
+        [(ngModel)]="draft"
+        placeholder="Écrire un message…"
+        (keydown.enter)="onEnter($event, thread.commande.id)"
+      ></textarea>
+      <button class="btn primary send" (click)="send(thread.commande.id)" [disabled]="sending || !draft.trim()">
+        Envoyer
+      </button>
+    </div>
+    @if (sendError) {
+      <p class="error">{{ sendError }}</p>
+    }
+  }
+</div>

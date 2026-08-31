@@ -1,0 +1,51 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Statistiques des utilisateurs</h1>
+      <p class="subtitle">Répartition des comptes par rôle et statut</p>
+    </div>
+    <a class="btn" routerLink="/admin/users">← Retour</a>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else if (stats(); as s) {
+    <div class="kpis">
+      <div class="kpi">
+        <b>{{ s.total }}</b>
+        <span>Total des comptes</span>
+      </div>
+      <div class="kpi kpi-pending">
+        <b>{{ s.enAttente }}</b>
+        <span>En attente d'approbation</span>
+      </div>
+      <div class="kpi kpi-gold">
+        <b>{{ s.admins }}</b>
+        <span>Administrateurs</span>
+      </div>
+      <div class="kpi kpi-green">
+        <b>{{ s.pharmaciens }}</b>
+        <span>Pharmaciens</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="widget">
+        <h3>Répartition par rôle</h3>
+        <app-donut-chart [items]="roleItems(s)" [palette]="rolePalette" />
+      </div>
+      <div class="widget">
+        <h3>Répartition par statut</h3>
+        <app-donut-chart [items]="statutItems(s)" [palette]="statutPalette" />
+      </div>
+      <div class="widget">
+        <h3>Comptes par statut</h3>
+        <app-bar-chart [items]="statutItems(s)" />
+      </div>
+    </div>
+  }
+</div>

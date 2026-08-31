@@ -1,0 +1,41 @@
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(0, 10fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-label {
+  font-size: 12px;
+  color: #9c8a78;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-track {
+  height: 12px;
+  background: #f0ece2;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d4af37, #e3c35f);
+  border-radius: 6px;
+}
+
+.bar-total {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5d4b38;
+  min-width: 2ch;
+  text-align: right;
+}

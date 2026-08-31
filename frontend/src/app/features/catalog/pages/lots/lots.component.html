@@ -1,0 +1,55 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1><i class="bi bi-box"></i> Gestion des Lots</h1>
+      <p>{{ totalElements }} lot(s) enregistré(s) dans la pharmacie</p>
+    </div>
+    <a class="btn-gold" routerLink="/lots/nouveau">
+      <i class="bi bi-plus-circle"></i> Nouveau lot
+    </a>
+  </div>
+
+  @if (loading) {
+    <div class="loading">
+      <span class="spinner-border spinner-border-sm"></span> Chargement…
+    </div>
+  }
+  @if (error) {
+    <div class="alert gold">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>N° lot</th>
+            <th>Péremption</th>
+            <th>Stock</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (lot of lots; track lot.id) {
+            <tr>
+              <td>
+                <a class="med" routerLink="/medicaments/{{ lot.medicamentId }}">{{ medName(lot.medicamentId) }}</a>
+              </td>
+              <td>{{ lot.numeroLot }}</td>
+              <td>
+                <span class="exp {{ lot.joursAvantPeremption !== null && lot.joursAvantPeremption <= 90 ? 'warn' : '' }}">
+                  {{ lot.datePeremption | date: 'dd/MM/yyyy' }}
+                </span>
+              </td>
+              <td>{{ lot.quantiteActuelle }} / {{ lot.quantiteInitiale }}</td>
+              <td><app-status-pill [label]="lot.statut" [tone]="lotTone(lot.statut)" /></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty">Aucun lot enregistré.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

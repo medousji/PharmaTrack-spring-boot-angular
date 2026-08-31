@@ -1,0 +1,197 @@
+/* ==== Tokens (thème legacy beige / or / brun) ==== */
+:root {
+  --color-primary: #8b7355;
+  --color-primary-dark: #5d4b38;
+  --color-accent: #d4af37;
+  --color-bg: #f8f5f0;
+  --color-surface: #fff;
+  --color-border: #e8e4da;
+  --color-text: #5d4b38;
+  --color-muted: #9c8a78;
+  --radius: 0.5rem;
+}
+
+/* ==== Reset & typographie ==== */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+h1,
+h2,
+h3 {
+  margin-top: 0;
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+/* ==== Utilitaires de page ==== */
+.page {
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filters input,
+.filters select {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font: inherit;
+  background: var(--color-surface);
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+.error {
+  color: #b03a2e;
+}
+
+.ok {
+  color: #6b8e23;
+  font-size: 13px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* ==== Cartes ==== */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(93, 75, 56, 0.08);
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* ==== Boutons ==== */
+.btn {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0.25rem 0.5rem rgba(93, 75, 56, 0.15);
+}
+
+.btn.primary {
+  background: linear-gradient(180deg, #8b7355, #5d4b38);
+  border-color: #5d4b38;
+  color: #fff;
+}
+
+.btn.primary:hover {
+  background: linear-gradient(180deg, #9c8768, #6b5741);
+  border-color: #6b5741;
+}
+
+.btn.danger {
+  border-color: #d9b0a6;
+  color: #a4402f;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+
+/* ==== Champs de formulaire ==== */
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  margin-bottom: 0.25rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font: inherit;
+  background: var(--color-surface);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+/* ==== Tableaux ==== */
+.table th {
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  border-top: none;
+}
+
+.table-hover tbody tr:hover {
+  background: rgba(212, 175, 55, 0.06);
+}
+
+/* ==== Badges ==== */
+.badge {
+  display: inline-block;
+  padding: 0.3em 0.7em;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}

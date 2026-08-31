@@ -1,0 +1,222 @@
+<div class="dashboard">
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="hint">Chargement des statistiques…</p>
+  } @else if (stats(); as s) {
+    <!-- En-tête avec bienvenue -->
+    <div class="welcome-card card">
+      <div>
+        <h2>Bonjour, <span>{{ userName() }}</span></h2>
+        <p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <path d="M16 2v4M8 2v4M3 10h18" />
+          </svg>
+          {{ todayLabel() }}
+        </p>
+      </div>
+      <div class="welcome-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7.1-7.1l7 7a5 5 0 1 1-7.1 7.1Z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Cartes de statistiques -->
+    <div class="stat-grid">
+      <div class="stat-card card">
+        <div class="stat-row">
+          <div>
+            <span class="stat-label">Médicaments</span>
+            <h2 class="stat-value">{{ s.totalMedicaments }}</h2>
+            <span class="stat-trend" style="color: #9caf88;">au catalogue</span>
+          </div>
+          <div class="stat-icon icon-gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7.1-7.1l7 7a5 5 0 1 1-7.1 7.1Z" />
+            </svg>
+          </div>
+        </div>
+        <div class="progress"><div class="progress-bar gold" style="width: 75%;"></div></div>
+      </div>
+
+      <div class="stat-card card">
+        <div class="stat-row">
+          <div>
+            <span class="stat-label">Ruptures</span>
+            <h2 class="stat-value">{{ s.ruptures }}</h2>
+            <span class="stat-trend" style="color: #e6a57e;">stock épuisé</span>
+          </div>
+          <div class="stat-icon icon-peach">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4 22 20H2Z" />
+              <path d="M12 10v4" />
+              <circle cx="12" cy="17" r="1" />
+            </svg>
+          </div>
+        </div>
+        <div class="progress"><div class="progress-bar peach" style="width: 25%;"></div></div>
+      </div>
+
+      <div class="stat-card card">
+        <div class="stat-row">
+          <div>
+            <span class="stat-label">Alertes</span>
+            <h2 class="stat-value">{{ s.alertesNonLues }}</h2>
+            <span class="stat-trend" style="color: #c4b5a0;">non lues</span>
+          </div>
+          <div class="stat-icon icon-beige">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+            </svg>
+          </div>
+        </div>
+        <div class="progress"><div class="progress-bar beige" style="width: 60%;"></div></div>
+      </div>
+
+      <div class="stat-card card">
+        <div class="stat-row">
+          <div>
+            <span class="stat-label">Lots proches</span>
+            <h2 class="stat-value">{{ s.lotsProches }}</h2>
+            <span class="stat-trend" style="color: #9caf88;">expirent bientôt</span>
+          </div>
+          <div class="stat-icon icon-green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" />
+              <path d="M12 14v4M10 16h4" />
+            </svg>
+          </div>
+        </div>
+        <div class="progress"><div class="progress-bar green" style="width: 40%;"></div></div>
+      </div>
+    </div>
+
+    <!-- Graphiques et actions -->
+    <div class="grid-3">
+      <div class="card-light card">
+        <h4>Répartition par catégorie</h4>
+        <div class="chart-box">
+          @if (s.categories.length > 0) {
+            <app-donut-chart [items]="s.categories" [palette]="palette" />
+          } @else {
+            <p class="empty">Aucune donnée de catégorie disponible</p>
+          }
+        </div>
+      </div>
+
+      <div class="card-light card">
+        <h4>Top 5 médicaments</h4>
+        <div class="ranking-list">
+          @for (m of s.topMedicaments; track m.id; let index = $index) {
+            <div class="ranking-item">
+              <span class="ranking-number">{{ index + 1 }}</span>
+              <div class="ranking-info">
+                <div class="ranking-line">
+                  <span class="ranking-name">{{ m.nom }}</span>
+                  <span class="ranking-stock">{{ m.stock }}</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar gold" [style.width.%]="rankingPct(s.topMedicaments, m.stock)"></div>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty">Aucun médicament avec stock</p>
+          }
+        </div>
+        <a class="link" routerLink="/medicaments">Voir tous les médicaments →</a>
+      </div>
+
+      <div class="card-light card">
+        <h4>Alertes récentes</h4>
+        <div class="alert-list">
+          @for (a of recentAlertes(); track a.id) {
+            <div
+              class="alert-item"
+              [style.border-left-color]="niveauColor(a.niveau)"
+            >
+              <div>
+                <span class="badge type" [style.background]="niveauColor(a.niveau)">{{ alerteTypeLabel(a.type) }}</span>
+                <p>{{ a.message }}</p>
+                <small>{{ timeAgo(a.createdAt) }}</small>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty">Aucune alerte non lue</p>
+          }
+        </div>
+        <a class="link" routerLink="/alertes">Voir toutes les alertes →</a>
+      </div>
+    </div>
+
+    <!-- Évolution et expiration -->
+    <div class="grid-2">
+      <div class="card-light card">
+        <h4>Évolution des ajouts (30 jours)</h4>
+        @if (s.evolutionMedicaments.length > 0) {
+          <svg class="line" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polygon [attr.points]="areaPoints(s.evolutionMedicaments)" class="area" />
+            <polyline [attr.points]="linePoints(s.evolutionMedicaments)" class="stroke" />
+          </svg>
+          <div class="line-labels">
+            <span>{{ dateLabel(s.evolutionMedicaments[0].date) }}</span>
+            <span>{{ dateLabel(s.evolutionMedicaments[s.evolutionMedicaments.length - 1].date) }}</span>
+          </div>
+        } @else {
+          <p class="empty">Aucune donnée d'évolution disponible</p>
+        }
+      </div>
+
+      <div class="card-light card">
+        <h4>Lots expirant bientôt</h4>
+        @if (s.lotsExpiration.length > 0) {
+          <div class="expiry-chart">
+            @for (l of s.lotsExpiration; track l.date) {
+              <div class="expiry-row">
+                <span class="expiry-date">{{ dateLabel(l.date) }}</span>
+                <div class="progress">
+                  <div
+                    class="progress-bar peach"
+                    [style.width.%]="(l.total / maxExpiration(s.lotsExpiration)) * 100"
+                  ></div>
+                </div>
+                <span class="expiry-count">{{ l.total }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty">Aucun lot n'expire dans les 30 prochains jours</p>
+        }
+      </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="quick-actions card">
+      <h4>Actions rapides</h4>
+      <div class="pills">
+        @if (canWrite()) {
+          <a class="pill gold" routerLink="/medicaments/nouveau">+ Ajouter médicament</a>
+          <a class="pill green" routerLink="/lots/nouveau">+ Nouveau lot</a>
+        }
+        @if (canAssistant()) {
+          <a class="pill brown" routerLink="/assistant">Assistant IA</a>
+        }
+        @if (isAdmin()) {
+          <a class="pill peach" routerLink="/admin/users">Utilisateurs</a>
+        }
+      </div>
+    </div>
+  }
+</div>

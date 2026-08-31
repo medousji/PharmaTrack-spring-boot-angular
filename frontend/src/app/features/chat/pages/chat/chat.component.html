@@ -1,0 +1,98 @@
+<div class="page chat-page">
+  <div class="page-header">
+    <h1>Messagerie</h1>
+    @if (data && data.totalNonLus > 0) {
+      <span class="badge-total">{{ data.totalNonLus }} non lu(s)</span>
+    }
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (data) {
+    <div class="tabs">
+      <button
+        class="tab"
+        [class.active]="activeTab === 'commandes'"
+        (click)="setTab('commandes')"
+      >
+        Commandes
+        @if (data.commandes.length > 0) {
+          <span class="count">{{ data.commandes.length }}</span>
+        }
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeTab === 'conversations'"
+        (click)="setTab('conversations')"
+      >
+        Conversations
+        @if (data.conversations.length > 0) {
+          <span class="count">{{ data.conversations.length }}</span>
+        }
+      </button>
+    </div>
+
+    @if (activeTab === 'commandes') {
+      <div class="list">
+        @for (c of data.commandes; track c.id) {
+          <a class="row" [routerLink]="['/chat/commande', c.id]">
+            <div class="row-main">
+              <div class="row-title">
+                <b>{{ c.numeroCommande }}</b>
+                <app-status-pill [label]="statutLabel(c.statut)" [tone]="statutTone(c.statut)" />
+              </div>
+              <div class="row-sub">{{ c.fournisseurNom }} · {{ c.totalTtc | number: '1.0-3' }} TND</div>
+              @if (c.dernierMessage) {
+                <div class="preview" [class.unread-preview]="c.nonLus > 0">
+                  {{ c.dernierMessage }}
+                </div>
+              }
+            </div>
+            <div class="row-side">
+              @if (c.dateDernierMessage) {
+                <span class="muted small">{{ c.dateDernierMessage | date: 'dd/MM HH:mm' }}</span>
+              }
+              @if (c.nonLus > 0) {
+                <span class="unread">{{ c.nonLus }}</span>
+              }
+            </div>
+          </a>
+        } @empty {
+          <p class="empty">Aucune commande liée à une discussion.</p>
+        }
+      </div>
+    } @else {
+      <div class="list">
+        @for (cv of data.conversations; track cv.contactId) {
+          <a class="row" [routerLink]="['/chat/conversation', cv.contactId]">
+            <div class="row-main">
+              <div class="row-title">
+                <b>{{ cv.nom }}</b>
+                <span class="role">{{ cv.role }}</span>
+              </div>
+              @if (cv.dernierMessage) {
+                <div class="preview" [class.unread-preview]="cv.nonLus > 0">
+                  {{ cv.dernierMessage }}
+                </div>
+              }
+            </div>
+            <div class="row-side">
+              @if (cv.date) {
+                <span class="muted small">{{ cv.date | date: 'dd/MM HH:mm' }}</span>
+              }
+              @if (cv.nonLus > 0) {
+                <span class="unread">{{ cv.nonLus }}</span>
+              }
+            </div>
+          </a>
+        } @empty {
+          <p class="empty">Aucune conversation directe.</p>
+        }
+      </div>
+    }
+  } @else {
+    <p class="empty">Chargement…</p>
+  }
+</div>

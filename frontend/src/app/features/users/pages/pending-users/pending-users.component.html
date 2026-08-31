@@ -1,0 +1,40 @@
+<div class="pending-users">
+  <h1>Validations en attente</h1>
+  <button (click)="load()">Recharger</button>
+
+  @if (pending.length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of pending; track u.id) {
+          <tr>
+            <td>{{ u.name }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.role }}</td>
+            <td>
+              <button (click)="approve(u, 'pharmacien')">Approuver (pharmacien)</button>
+              <button (click)="approve(u, 'fournisseur')">Approuver (fournisseur)</button>
+              <button class="danger" (click)="reject(u)">Rejeter</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p>Aucune validation en attente.</p>
+  }
+
+  @if (message) {
+    <p>{{ message }}</p>
+  }
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+</div>

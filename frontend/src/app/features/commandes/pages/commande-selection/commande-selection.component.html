@@ -1,0 +1,60 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Commander auprès des fournisseurs</h1>
+      <p class="subtitle">Choisissez un médicament puis sélectionnez le fournisseur</p>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <div class="filters">
+    <input
+      type="search"
+      placeholder="Rechercher (nom, CIP, DCI)…"
+      [(ngModel)]="search"
+      (ngModelChange)="onSearchChange($event)"
+    />
+  </div>
+
+  <table class="grid">
+    <thead>
+      <tr>
+        <th>Médicament</th>
+        <th>CIP</th>
+        <th>DCI</th>
+        <th>Forme</th>
+        <th>Dosage</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (m of medicaments; track m.id) {
+        <tr>
+          <td class="name">{{ m.nomCommercialFr ?? '—' }}</td>
+          <td class="muted">{{ m.codeCip }}</td>
+          <td class="muted">{{ m.dci ?? '—' }}</td>
+          <td class="muted">{{ m.formePharmaceutique ?? '—' }}</td>
+          <td class="muted">{{ m.dosage ?? '—' }}</td>
+          <td class="actions">
+            <a class="btn gold" routerLink="/commandes/creer/{{ m.id }}">Commander</a>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="empty">Aucun médicament trouvé.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [page]="page"
+    [totalPages]="totalPages"
+    [totalElements]="totalElements"
+    itemLabel="médicament(s)"
+    (pageChange)="go($event)"
+  />
+</div>

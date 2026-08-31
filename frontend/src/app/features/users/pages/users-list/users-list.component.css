@@ -1,0 +1,139 @@
+.subtitle {
+  margin: 0;
+  color: #9c8a78;
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+input[type="search"] {
+  min-width: 240px;
+}
+
+/* KPI cards (inspirées du style legacy Tunisien) */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.kpi {
+  background: #fff;
+  border: 1px solid #e8e4da;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.06);
+  border-top: 3px solid #d4af37;
+}
+
+.kpi b {
+  display: block;
+  font-size: 24px;
+  color: #5d4b38;
+}
+
+.kpi span {
+  font-size: 12px;
+  color: #9c8a78;
+}
+
+.kpi-pending {
+  border-top-color: #8b7355;
+}
+
+.kpi-gold {
+  border-top-color: #d4af37;
+}
+
+.kpi-green {
+  border-top-color: #9caf88;
+}
+
+.kpi-orange {
+  border-top-color: #e6a57e;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e8e4da;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table.grid th,
+table.grid td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #f0ebe4;
+  font-size: 14px;
+}
+
+table.grid thead th {
+  background: #f8f5f0;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #9c8a78;
+  border-bottom: 2px solid #d4af37;
+}
+
+table.grid tbody tr:hover {
+  background: #faf7f2;
+}
+
+.name {
+  font-weight: 600;
+  color: #5d4b38;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.badge-self {
+  margin-left: 0.35rem;
+  background: #d4af37;
+}
+
+.badge-admin {
+  background: #d4af37;
+}
+
+.badge-pharmacien {
+  background: #9caf88;
+}
+
+.badge-fournisseur {
+  background: #e6a57e;
+}
+
+.badge-visiteur {
+  background: #b8aa9a;
+}
+
+.badge-active {
+  background: #9caf88;
+}
+
+.badge-inactive {
+  background: #e6a57e;
+}
+
+.badge-suspended {
+  background: #9c8a78;
+}
+
+.actions {
+  justify-content: flex-end;
+  white-space: nowrap;
+}

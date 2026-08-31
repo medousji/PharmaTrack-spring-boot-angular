@@ -1,0 +1,92 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Boîte des alertes</h1>
+    @if (isAdmin) {
+      <button class="btn primary" (click)="reEvaluate()">Ré-évaluer maintenant</button>
+    }
+  </div>
+
+  <div class="stats">
+    <span class="stat"><b class="n-critique">{{ counts.critique }}</b> critique</span>
+    <span class="stat"><b class="n-eleve">{{ counts.eleve }}</b> élevé</span>
+    <span class="stat"><b class="n-moyen">{{ counts.moyen }}</b> moyen</span>
+    <span class="stat"><b class="n-faible">{{ counts.faible }}</b> faible</span>
+  </div>
+
+  <div class="filters">
+    <select [(ngModel)]="type" (ngModelChange)="reload()">
+      <option value="">Tous types</option>
+      <option value="expiration">Expiration</option>
+      <option value="stock">Stock faible</option>
+      <option value="rupture">Rupture</option>
+      <option value="qualite">Qualité</option>
+      <option value="autre">Autre</option>
+      <option value="inscription">Inscription</option>
+      <option value="approbation">Approbation</option>
+    </select>
+    <select [(ngModel)]="niveau" (ngModelChange)="reload()">
+      <option value="">Tous niveaux</option>
+      <option value="faible">Faible</option>
+      <option value="moyen">Moyen</option>
+      <option value="eleve">Élevé</option>
+      <option value="critique">Critique</option>
+    </select>
+    <select [(ngModel)]="estLue" (ngModelChange)="reload()">
+      <option value="">Lues et non lues</option>
+      <option value="false">Non lues</option>
+      <option value="true">Lues</option>
+    </select>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (message) {
+    <p class="ok">{{ message }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Niveau</th>
+        <th>Message</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of items; track a.id) {
+        <tr>
+          <td><app-status-pill [label]="typeLabel(a.type)" [tone]="typeTone(a.type)" /></td>
+          <td><app-status-pill [label]="niveauLabel(a.niveau)" [tone]="niveauTone(a.niveau)" /></td>
+          <td>
+            {{ a.message }}
+            @if (!a.estLue) {
+              <app-status-pill class="unread" label="non lue" tone="warning" />
+            }
+          </td>
+          <td class="muted">{{ a.createdAt | date: 'short' }}</td>
+          <td class="actions">
+            @if (!a.estLue) {
+              <button class="btn" (click)="markRead(a)">Marquer lue</button>
+            }
+            <button class="btn" (click)="resolve(a)">Résoudre</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" class="empty">Aucune alerte.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [page]="page"
+    [totalPages]="totalPages"
+    [totalElements]="totalElements"
+    itemLabel="alerte(s)"
+    (pageChange)="go($event)"
+  />
+</div>

@@ -1,0 +1,197 @@
+﻿<div class="page page--form">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <a routerLink="/medicaments"><i class="bi bi-arrow-left"></i> Catalogue</a>
+      </div>
+      <h1>{{ editId ? 'Modifier le médicament' : 'Nouveau médicament' }}</h1>
+      <p>{{ editId ? 'Mettez à jour la fiche du médicament' : 'Créez une nouvelle fiche médicament' }}</p>
+    </div>
+  </div>
+
+  @if (loading) {
+    <p>Chargement…</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <section>
+        <h2><i class="bi bi-person-vcard"></i> Identification</h2>
+        <div class="row">
+          <div class="field">
+            <label for="codeCip">Code CIP *</label>
+            <input id="codeCip" formControlName="codeCip" />
+          </div>
+          <div class="field">
+            <label for="nomCommercialFr">Nom commercial (FR) *</label>
+            <input id="nomCommercialFr" formControlName="nomCommercialFr" />
+          </div>
+          <div class="field">
+            <label for="nomCommercialAr">Nom commercial (AR)</label>
+            <input id="nomCommercialAr" formControlName="nomCommercialAr" />
+          </div>
+          <div class="field">
+            <label for="dci">DCI *</label>
+            <input id="dci" formControlName="dci" />
+          </div>
+          <div class="field">
+            <label for="formePharmaceutique">Forme pharmaceutique *</label>
+            <input id="formePharmaceutique" formControlName="formePharmaceutique" />
+          </div>
+          <div class="field">
+            <label for="dosage">Dosage *</label>
+            <input id="dosage" formControlName="dosage" />
+          </div>
+          <div class="field">
+            <label for="conditionnement">Conditionnement</label>
+            <input id="conditionnement" formControlName="conditionnement" />
+          </div>
+          <div class="field">
+            <label for="classeTherapeutique">Classe thérapeutique</label>
+            <input id="classeTherapeutique" formControlName="classeTherapeutique" />
+          </div>
+          <div class="field">
+            <label for="voieAdministration">Voie d&apos;administration</label>
+            <input id="voieAdministration" formControlName="voieAdministration" />
+          </div>
+          <div class="field">
+            <label for="laboratoire">Laboratoire</label>
+            <input id="laboratoire" formControlName="laboratoire" />
+          </div>
+          <div class="field">
+            <label for="paysOrigine">Pays d&apos;origine</label>
+            <input id="paysOrigine" formControlName="paysOrigine" />
+          </div>
+          <div class="field">
+            <label for="codeAtc">Code ATC</label>
+            <input id="codeAtc" formControlName="codeAtc" />
+          </div>
+          <div class="field">
+            <label for="codeBarre">Code-barres</label>
+            <input id="codeBarre" formControlName="codeBarre" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2><i class="bi bi-coin"></i> Prix &amp; remboursement</h2>
+        <div class="row">
+          <div class="field">
+            <label for="ppv">PPV</label>
+            <input id="ppv" type="number" step="0.01" formControlName="ppv" />
+          </div>
+          <div class="field">
+            <label for="ph">PH</label>
+            <input id="ph" type="number" step="0.01" formControlName="ph" />
+          </div>
+          <div class="field">
+            <label for="prixBr">Prix brut</label>
+            <input id="prixBr" type="number" step="0.01" formControlName="prixBr" />
+          </div>
+          <div class="field">
+            <label for="prixPublic">Prix public</label>
+            <input id="prixPublic" type="number" step="0.01" formControlName="prixPublic" />
+          </div>
+          <div class="field">
+            <label for="tauxRemboursement">Taux de remboursement (%)</label>
+            <input id="tauxRemboursement" type="number" step="0.01" formControlName="tauxRemboursement" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2><i class="bi bi-box-seam"></i> Stock &amp; seuils</h2>
+        <div class="row">
+          <div class="field">
+            <label for="stockMin">Stock minimum *</label>
+            <input id="stockMin" type="number" formControlName="stockMin" />
+          </div>
+          <div class="field">
+            <label for="stockMax">Stock maximum *</label>
+            <input id="stockMax" type="number" formControlName="stockMax" />
+          </div>
+          <div class="field">
+            <label for="seuilAlerte">Seuil d&apos;alerte *</label>
+            <input id="seuilAlerte" type="number" formControlName="seuilAlerte" />
+          </div>
+          <div class="field">
+            <label for="delaiRenouvellement">Délai de renouvellement (jours)</label>
+            <input id="delaiRenouvellement" type="number" formControlName="delaiRenouvellement" />
+          </div>
+        </div>
+
+        <div class="checks">
+          <label>
+            <input type="checkbox" formControlName="estPsychotrope" />Psychotrope
+          </label>
+          <label>
+            <input type="checkbox" formControlName="estTherLourde" />Thérapie lourde
+          </label>
+          <label>
+            <input type="checkbox" formControlName="estRenouvelable" />Renouvelable
+          </label>
+          <label>
+            <input type="checkbox" formControlName="estGenerique" />Générique
+          </label>
+        </div>
+
+        @if (form.value.estGenerique) {
+          <div class="field gen-ref">
+            <label for="medicamentReferenceId">Médicament de référence</label>
+            <select id="medicamentReferenceId" formControlName="medicamentReferenceId">
+              <option value="">— Aucun —</option>
+              @for (m of medicaments; track m.id) {
+                <option [value]="m.id">{{ m.nomCommercialFr }}</option>
+              }
+            </select>
+          </div>
+        }
+      </section>
+
+      <section>
+        <h2><i class="bi bi-shield-check"></i> Informations réglementaires</h2>
+        <div class="row">
+          <div class="field">
+            <label for="contreIndications">Contre-indications</label>
+            <textarea id="contreIndications" formControlName="contreIndications"></textarea>
+          </div>
+          <div class="field">
+            <label for="effetsIndesirables">Effets indésirables</label>
+            <textarea id="effetsIndesirables" formControlName="effetsIndesirables"></textarea>
+          </div>
+          <div class="field">
+            <label for="interactionsMedicamenteuses">Interactions médicamenteuses</label>
+            <textarea id="interactionsMedicamenteuses" formControlName="interactionsMedicamenteuses"></textarea>
+          </div>
+          <div class="field">
+            <label for="conditionsConservation">Conditions de conservation</label>
+            <textarea id="conditionsConservation" formControlName="conditionsConservation"></textarea>
+          </div>
+        </div>
+      </section>
+
+      @if (editId) {
+        <section>
+          <h2><i class="bi bi-toggle-on"></i> Statut</h2>
+          <div class="field">
+            <label for="statut">Statut</label>
+            <select id="statut" formControlName="statut">
+              <option value="actif">Actif</option>
+              <option value="inactif">Inactif</option>
+              <option value="retire">Retiré</option>
+            </select>
+          </div>
+        </section>
+      }
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <div class="actions">
+        <a class="btn-ghost" routerLink="/medicaments">Annuler</a>
+        <button type="submit" class="btn-gold" [disabled]="saving || form.invalid">
+          {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

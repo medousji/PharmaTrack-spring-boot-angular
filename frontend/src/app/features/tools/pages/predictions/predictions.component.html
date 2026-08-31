@@ -1,0 +1,87 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Suggestions IA</h1>
+      <p>Prévisions de réapprovisionnement basées sur votre stock</p>
+    </div>
+    <div class="head-note">
+      <i class="bi bi-robot"></i> Modèle simplifié, mis à jour en temps réel
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading"><span class="spinner-border spinner-border-sm"></span> Calcul des prévisions…</div>
+  }
+  @if (error) {
+    <div class="alert gold">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+    <div class="cards">
+      <div class="stat">
+        <div class="num">{{ suggestions.length || 0 }}</div>
+        <div class="lbl">À réapprovisionner</div>
+      </div>
+      <div class="stat">
+        <div class="num">{{ objectifs.length || 0 }}</div>
+        <div class="lbl">Points d'attention</div>
+      </div>
+      <div class="stat">
+        <div class="num {{ suggestions.length ? 'val' : '' }}">{{ suggestions.length ? 'PRÊT' : 'OK' }}</div>
+        <div class="lbl">Statut de la pharmacie</div>
+      </div>
+    </div>
+
+    <h3 class="sec"><i class="bi bi-cart4"></i> Recommandations d'achat</h3>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>Stock</th>
+            <th>Quantité conseillée</th>
+            <th>Motif</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of suggestions; track s.medicament.id) {
+            <tr>
+              <td>
+                <a class="med" routerLink="/medicaments/{{ s.medicament.id }}">{{ s.medicament.nomCommercialFr }}</a>
+                <span class="dci">{{ s.medicament.dci }}</span>
+              </td>
+              <td>
+                <span class="stk {{ s.stock === 0 ? 'empty' : '' }}">{{ s.stock }}</span>
+              </td>
+              <td><b class="need">{{ s.besoin }}</b> unités</td>
+              <td>
+                <app-status-pill [label]="s.motif" [tone]="s.stock === 0 ? 'danger' : 'warning'" />
+              </td>
+              <td>
+                <a class="btn-gold sm" routerLink="/commandes"><i class="bi bi-plus-circle"></i> Commander</a>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty">Aucun réapprovisionnement nécessaire.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sec"><i class="bi bi-lightbulb"></i> Points d'attention</h3>
+    <div class="obj-grid">
+      @for (o of objectifs; track o.medicament.id) {
+        <div class="obj-card">
+          <i class="bi bi-exclamation-triangle"></i>
+          <div>
+            <b>{{ o.medicament.nomCommercialFr }}</b>
+            <span>{{ o.objectif }}</span>
+          </div>
+        </div>
+      } @empty {
+        <div class="empty">Aucun point d'attention.</div>
+      }
+    </div>
+  }
+</div>

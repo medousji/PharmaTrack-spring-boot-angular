@@ -1,0 +1,146 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Catalogue des médicaments</h1>
+      <p>Gérez les fiches, les prix et le stock de votre pharmacie</p>
+    </div>
+    @if (canWrite) {
+      <a class="btn-gold" routerLink="/medicaments/nouveau">
+        <i class="bi bi-plus-circle"></i> Nouveau médicament
+      </a>
+    }
+  </div>
+
+  <div class="stat-cards">
+    <div class="stat">
+      <div class="icon beige"><i class="bi bi-capsule"></i></div>
+      <div class="txt">
+        <b>{{ totalElements }}</b>
+        <span>Médicaments référencés</span>
+      </div>
+    </div>
+    <div class="stat">
+      <div class="icon green"><i class="bi bi-check-circle"></i></div>
+      <div class="txt">
+        <b>{{ counts.actifs }}</b>
+        <span>En stock actif</span>
+      </div>
+    </div>
+    <div class="stat">
+      <div class="icon red"><i class="bi bi-exclamation-triangle"></i></div>
+      <div class="txt">
+        <b>{{ counts.rupture }}</b>
+        <span>En rupture</span>
+      </div>
+    </div>
+    <div class="stat">
+      <div class="icon gold"><i class="bi bi-hourglass"></i></div>
+      <div class="txt">
+        <b>{{ counts.peremption }}</b>
+        <span>Proches péremption</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <i class="bi bi-search"></i>
+      <input
+        type="search"
+        placeholder="Rechercher (nom, DCI, code CIP…)"
+        [(ngModel)]="search"
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </div>
+    <select [(ngModel)]="statut" (ngModelChange)="reload()">
+      <option value="">Tous les statuts</option>
+      <option value="actif">Actif</option>
+      <option value="inactif">Inactif</option>
+      <option value="retire">Retiré</option>
+    </select>
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="enRupture" (ngModelChange)="reload()" />
+      En rupture
+    </label>
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="prochePeremption" (ngModelChange)="reload()" />
+      Proche péremption
+    </label>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Médicament</th>
+          <th>Code CIP</th>
+          <th>Forme / Dosage</th>
+          <th>Prix</th>
+          <th>Stock</th>
+          <th>Statut</th>
+          <th>État</th>
+          <th class="right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of items; track m.id) {
+          <tr>
+            <td>
+              <a class="link" routerLink="/medicaments/{{ m.id }}">{{ m.nomCommercialFr }}</a>
+              <span class="muted">{{ m.dci }}</span>
+              @if (m.nomCommercialAr) {
+                <span class="ar">{{ m.nomCommercialAr }}</span>
+              }
+            </td>
+            <td class="mono">{{ m.codeCip }}</td>
+            <td>
+              {{ m.formePharmaceutique }}
+              <span class="muted">{{ m.dosage }}</span>
+            </td>
+            <td class="prix">{{ m.prixPublic || m.ppv || m.prixBr }} TND</td>
+            <td>
+              <strong>{{ m.stockActif ?? 0 }}</strong>
+              <div class="bar"><div class="fill" [style.width.%]="stockPct(m)"></div></div>
+            </td>
+            <td><app-status-pill [label]="m.statut" [tone]="medicamentTone(m.statut)" /></td>
+            <td class="states">
+              @if (m.estEnRupture) {
+                <app-status-pill label="Rupture" tone="warning" />
+              }
+              @if (m.estProchePeremption) {
+                <app-status-pill [label]="'Péremption ' + m.datePeremptionProche" tone="danger" />
+              }
+              @if (!m.estEnRupture && !m.estProchePeremption) {
+                <span class="ok">Disponible</span>
+              }
+            </td>
+            <td class="actions">
+              <a class="btn-icon" routerLink="/medicaments/{{ m.id }}" title="Voir le détail"><i class="bi bi-eye"></i></a>
+              @if (canWrite) {
+                <a class="btn-icon" routerLink="/medicaments/{{ m.id }}/modifier" title="Modifier"><i class="bi bi-pencil"></i></a>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="empty">Aucun médicament trouvé.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (totalPages > 1) {
+    <app-pagination
+      [page]="page"
+      [totalPages]="totalPages"
+      [totalElements]="totalElements"
+      itemLabel="résultat(s)"
+      (pageChange)="go($event)"
+    />
+  }
+</div>

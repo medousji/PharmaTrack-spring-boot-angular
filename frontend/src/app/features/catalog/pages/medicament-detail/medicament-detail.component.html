@@ -1,0 +1,218 @@
+<div class="page">
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (m) {
+    <div class="breadcrumb">
+      <a routerLink="/medicaments"><i class="bi bi-arrow-left"></i> Catalogue</a>
+    </div>
+
+    <div class="page-header">
+      <div class="title-block">
+        <div class="head-row">
+          <h1>{{ m.nomCommercialFr }}</h1>
+          <app-status-pill [label]="m.statut" [tone]="medicamentTone(m.statut)" />
+          @if (m.estEnRupture) {
+            <app-status-pill label="Rupture" tone="danger" />
+          }
+          @if (m.estProchePeremption) {
+            <app-status-pill [label]="'Péremption ' + m.datePeremptionProche" tone="warning" />
+          }
+        </div>
+        <div class="sub">
+          <span class="chip mono">CIP {{ m.codeCip }}</span>
+          <span class="chip">{{ m.dci }}</span>
+          <span class="chip">{{ m.formePharmaceutique }} {{ m.dosage }}</span>
+          @if (m.laboratoire) {
+            <span class="chip">{{ m.laboratoire }}</span>
+          }
+          @if (m.codeBarre) {
+            <span class="chip"><i class="bi bi-upc-scan"></i> {{ m.codeBarre }}</span>
+          }
+          @if (m.nomCommercialAr) {
+            <span class="chip ar">{{ m.nomCommercialAr }}</span>
+          }
+        </div>
+      </div>
+      <div class="actions">
+        @if (canWrite) {
+          <a class="btn-ghost" routerLink="/medicaments/{{ m.id }}/modifier">
+            <i class="bi bi-pencil"></i> Modifier
+          </a>
+          <a class="btn-gold" routerLink="/medicaments/{{ m.id }}/lots/nouveau">
+            <i class="bi bi-plus-circle"></i> Réceptionner un lot
+          </a>
+          @if (isAdmin) {
+            <button class="btn-danger" (click)="retirer()">
+              <i class="bi bi-x-circle"></i> Retirer
+            </button>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat">
+        <div class="icon beige"><i class="bi bi-box-seam"></i></div>
+        <div class="txt"><b>{{ m.stockActif ?? 0 }}</b><span>Stock actif</span></div>
+      </div>
+      <div class="stat">
+        <div class="icon beige"><i class="bi bi-boxes"></i></div>
+        <div class="txt"><b>{{ m.stockTotal ?? 0 }}</b><span>Stock total</span></div>
+      </div>
+      <div class="stat">
+        <div class="icon gold"><i class="bi bi-cash-coin"></i></div>
+        <div class="txt"><b>{{ (m.valeurStock ?? 0).toFixed(2) }} TND</b><span>Valeur du stock</span></div>
+      </div>
+      <div class="stat">
+        <div class="icon green"><i class="bi bi-tag"></i></div>
+        <div class="txt">
+          <b>{{ m.prixPublic ?? '—' }} TND</b>
+          <span>Prix public @if (m.tauxRemboursement != null) { ({{ m.tauxRemboursement }}% remb.) }</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="panel">
+      <h2><i class="bi bi-calendar-check"></i> Prochain lot à dispenser (FEFO)</h2>
+      @if (nextLot) {
+        <div class="next">
+          <i class="bi bi-box"></i>
+          <div>
+            Lot <strong>{{ nextLot.numeroLot }}</strong> — quantité
+            <strong>{{ nextLot.quantiteActuelle }}</strong> —
+            péremption <strong>{{ nextLot.datePeremption | date: 'dd/MM/yyyy' }}</strong>
+          </div>
+          <app-status-pill [label]="nextLot.statut" [tone]="lotTone(nextLot.statut)" />
+        </div>
+      } @else {
+        <p class="meta">Aucun lot actif en stock.</p>
+      }
+    </section>
+
+    <section class="panel">
+      <h2><i class="bi bi-boxes"></i> Lots</h2>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>N° lot</th>
+              <th>Réception</th>
+              <th>Péremption</th>
+              <th>Quantité</th>
+              <th>Statut</th>
+              <th>Prix achat</th>
+              <th>Emplacement</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (lot of lots; track lot.id) {
+              <tr>
+                <td class="mono">{{ lot.numeroLot }}</td>
+                <td>{{ lot.dateReception ? (lot.dateReception | date: 'dd/MM/yyyy') : '—' }}</td>
+                <td>
+                  {{ lot.datePeremption | date: 'dd/MM/yyyy' }}
+                  @if (lot.joursAvantPeremption != null && lot.joursAvantPeremption <= 180) {
+                    <app-status-pill [label]="lot.joursAvantPeremption + ' j'" tone="warning" />
+                  }
+                </td>
+                <td>{{ lot.quantiteActuelle }} / {{ lot.quantiteInitiale }}</td>
+                <td><app-status-pill [label]="lot.statut" [tone]="lotTone(lot.statut)" /></td>
+                <td>{{ lot.prixAchat }} TND</td>
+                <td>{{ lot.emplacement ?? '—' }}</td>
+                <td class="right">
+                  <a class="btn-mini" routerLink="/mouvements" [queryParams]="{ lotId: lot.id }">
+                    Mouvements
+                  </a>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="empty">Aucun lot.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    @if (canWrite) {
+      <section class="panel">
+        <h2><i class="bi bi-sliders"></i> Ajustement de stock</h2>
+        <form [formGroup]="adjustForm" (ngSubmit)="onAdjust()" class="adjust" novalidate>
+          <div class="field">
+            <label for="lotId">Lot *</label>
+            <select id="lotId" formControlName="lotId">
+              <option value="">— Choisir —</option>
+              @for (lot of lots; track lot.id) {
+                <option [value]="lot.id">{{ lot.numeroLot }} ({{ lot.quantiteActuelle }})</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label for="type">Type *</label>
+            <select id="type" formControlName="type">
+              <option value="entree">Entrée</option>
+              <option value="sortie">Sortie</option>
+              <option value="ajustement">Ajustement</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="quantite">Quantité *</label>
+            <input id="quantite" type="number" formControlName="quantite" />
+          </div>
+          <div class="field">
+            <label for="motif">Motif</label>
+            <input id="motif" formControlName="motif" />
+          </div>
+          <div class="field">
+            <label for="reference">Référence</label>
+            <input id="reference" formControlName="reference" />
+          </div>
+          <button type="submit" class="btn-gold" [disabled]="adjusting || adjustForm.invalid">
+            {{ adjusting ? 'Application…' : 'Appliquer' }}
+          </button>
+        </form>
+        @if (message) {
+          <p class="ok detail-message">{{ message }}</p>
+        }
+      </section>
+    }
+
+    <section class="panel">
+      <h2><i class="bi bi-info-circle"></i> Informations</h2>
+      <dl class="kv">
+        <div><dt>Classe thérapeutique</dt><dd>{{ m.classeTherapeutique ?? '—' }}</dd></div>
+        <div><dt>Voie d&apos;administration</dt><dd>{{ m.voieAdministration ?? '—' }}</dd></div>
+        <div><dt>Conditionnement</dt><dd>{{ m.conditionnement ?? '—' }}</dd></div>
+        <div><dt>Code ATC</dt><dd>{{ m.codeAtc ?? '—' }}</dd></div>
+        <div><dt>PPV</dt><dd>{{ m.ppv ?? '—' }}</dd></div>
+        <div><dt>PH</dt><dd>{{ m.ph ?? '—' }}</dd></div>
+        <div><dt>Prix brut</dt><dd>{{ m.prixBr ?? '—' }}</dd></div>
+        <div><dt>Prix public</dt><dd>{{ m.prixPublic ?? '—' }}</dd></div>
+        <div><dt>Taux remboursement</dt><dd>{{ m.tauxRemboursement ?? '—' }}%</dd></div>
+        <div><dt>Stock min / max</dt><dd>{{ m.stockMin }} / {{ m.stockMax }}</dd></div>
+        <div><dt>Seuil d&apos;alerte</dt><dd>{{ m.seuilAlerte }}</dd></div>
+        <div><dt>Pays d&apos;origine</dt><dd>{{ m.paysOrigine ?? '—' }}</dd></div>
+        <div><dt>Psychotrope</dt><dd>{{ m.estPsychotrope ? 'Oui' : 'Non' }}</dd></div>
+        <div><dt>Thérapie lourde</dt><dd>{{ m.estTherLourde ? 'Oui' : 'Non' }}</dd></div>
+        <div><dt>Renouvelable</dt><dd>{{ m.estRenouvelable ? 'Oui' : 'Non' }}</dd></div>
+        <div><dt>Générique</dt><dd>{{ m.estGenerique ? 'Oui' : 'Non' }}</dd></div>
+        <div><dt>Référence générique</dt><dd>{{ m.medicamentReferenceId ?? '—' }}</dd></div>
+        <div><dt>Code-barres</dt><dd>{{ m.codeBarre ?? '—' }}</dd></div>
+        <div><dt>Statut</dt><dd><app-status-pill [label]="m.statut" [tone]="medicamentTone(m.statut)" /></dd></div>
+      </dl>
+      @if (m.contreIndications || m.effetsIndesirables || m.interactionsMedicamenteuses || m.conditionsConservation) {
+        <dl class="kv detail-more">
+          <div><dt>Contre-indications</dt><dd>{{ m.contreIndications ?? '—' }}</dd></div>
+          <div><dt>Effets indésirables</dt><dd>{{ m.effetsIndesirables ?? '—' }}</dd></div>
+          <div><dt>Interactions</dt><dd>{{ m.interactionsMedicamenteuses ?? '—' }}</dd></div>
+          <div><dt>Conservation</dt><dd>{{ m.conditionsConservation ?? '—' }}</dd></div>
+        </dl>
+      }
+    </section>
+  } @else if (!error) {
+    <div class="loading"><span class="spinner-border spinner-border-sm"></span> Chargement…</div>
+  }
+</div>

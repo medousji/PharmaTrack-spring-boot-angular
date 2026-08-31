@@ -1,0 +1,30 @@
+# --- Java / Maven ---
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.log
+
+# --- Node / Angular ---
+node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.tmp/
+coverage/
+*.tsbuildinfo
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# --- Environment ---
+.env
+*.local
+
+# --- Local private PostgreSQL data dir (Epic 0 localdev, no Docker) ---
+.pgdata/
+
+# --- Generated API client (regenerated from OpenAPI in CI) ---
+frontend/src/app/core/api/

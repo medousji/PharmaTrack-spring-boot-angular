@@ -1,0 +1,142 @@
+:host {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #5d4b38 0%, #8b7355 100%);
+  color: #fff;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 1.4rem 1.25rem 1rem;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  color: #d4af37;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.brand:hover {
+  transform: scale(1.05);
+  color: #d4af37;
+}
+
+.brand i {
+  font-size: 20px;
+}
+
+.user-card {
+  padding: 0.4rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.user-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.user-line > i {
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.user-meta {
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  overflow-wrap: anywhere;
+}
+
+.badge.role {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1.5rem;
+}
+
+.group-title {
+  padding: 1rem 1.25rem 0.3rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.18rem 0.75rem;
+  padding: 0.62rem 0.8rem;
+  width: calc(100% - 1.5rem);
+  border: none;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  text-align: left;
+  font-family: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link i {
+  width: 1.25rem;
+  font-size: 15px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover i {
+  transform: scale(1.2);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #fff;
+  background: rgba(212, 175, 55, 0.3);
+  transform: translateX(5px);
+}
+
+.nav-link.logout:hover {
+  background: rgba(185, 64, 46, 0.4);
+}
+
+.badge.count {
+  float: right;
+  background: #c94f3d;
+  color: #fff;
+}
+
+.badge.count.pending {
+  background: #e8a04c;
+  color: #fff;
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    width: 220px;
+  }
+}

@@ -1,0 +1,31 @@
+.subtitle {
+  margin: 0;
+  color: #9c8a78;
+  font-size: 14px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e8e4da;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 560px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.06);
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}

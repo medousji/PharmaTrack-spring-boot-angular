@@ -1,0 +1,136 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Nouvelle commande</h1>
+      <p class="subtitle">{{ medicamentNom }}</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" routerLink="/commandes">Choisir un autre médicament</a>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (message) {
+    <p class="ok">{{ message }}</p>
+  }
+
+  <div class="card">
+    <div class="field">
+      <label for="fournisseur">Fournisseur</label>
+      <select id="fournisseur" [(ngModel)]="selectedId">
+        @for (f of fournisseurs; track f.id) {
+          <option [value]="f.id">
+            {{ f.fournisseurNom }} — {{ f.prixAchat }} TND (stock {{ f.stockDisponible }})
+          </option>
+        }
+      </select>
+      @if (selectedFm(); as fm) {
+        <p class="hint">
+          Réf. {{ fm.referenceFournisseur ?? '—' }} · Prix d'achat :
+          <b>{{ fm.prixAchat }} TND</b> · Stock : {{ fm.stockDisponible }} · Réserve minimum :
+          {{ fm.stockMinimum }} · Livraison : {{ fm.delaiLivraison ?? 0 }} j
+        </p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="quantite">Quantité</label>
+      <input
+        id="quantite"
+        type="number"
+        min="1"
+        step="1"
+        class="qty"
+        [(ngModel)]="quantite"
+        (ngModelChange)="verif = null; result = null; passError = ''"
+      />
+    </div>
+
+    <div class="buttons">
+      <button class="btn" (click)="checkDisponibilite()" [disabled]="verifLoading || fournisseurs.length === 0">
+        {{ verifLoading ? 'Vérification…' : 'Vérifier la disponibilité' }}
+      </button>
+      <button class="btn primary" (click)="passer()" [disabled]="passLoading || fournisseurs.length === 0">
+        {{ passLoading ? 'Passage de la commande…' : 'Passer la commande' }}
+      </button>
+    </div>
+
+    @if (verifError) {
+      <p class="error">{{ verifError }}</p>
+    }
+    @if (passError) {
+      <p class="error">{{ passError }}</p>
+    }
+
+    @if (verif) {
+      <div class="result" [class.result-ok]="verif.disponible" [class.result-ko]="!verif.disponible">
+        @if (verif.disponible) {
+          <p>
+            <b>Disponible</b> — {{ verif.quantiteDisponible }} unité(s) peuvent être commandées.
+            @if (verif.quantiteManquante) {
+              Manque <b>{{ verif.quantiteManquante }}</b> unité(s), une commande partielle sera créée.
+            }
+          </p>
+          <p class="hint">
+            Prix : {{ verif.prixAchat }} TND · Réserve minimum : {{ verif.stockMinimum }} · Stock actuel :
+            {{ verif.stockActuel }}
+          </p>
+        } @else {
+          <p>
+            <b>Indisponible</b> — {{ verif.raison ?? 'Stock insuffisant.' }}
+          </p>
+          <p class="hint">Stock actuel : {{ verif.stockActuel ?? '—' }} · Réserve minimum : {{ verif.stockMinimum ?? '—' }}</p>
+        }
+      </div>
+    }
+
+    @if (result) {
+      <div class="result" [class.result-ok]="result.success" [class.result-ko]="!result.success">
+        @if (result.success && result.commande) {
+          <p>
+            <b>Commande {{ result.commande.numeroCommande }}</b> — {{ result.message }}
+            <app-status-pill [label]="statutLabel(result.commande.statut)" [tone]="statutTone(result.commande.statut)" />
+          </p>
+          <p class="hint">
+            Quantité commandée : {{ result.quantiteCommandee }} · Manquante :
+            {{ result.quantiteManquante }} · Stock avant : {{ result.stockAvant }} · Stock après :
+            {{ result.stockApres }} · Final TTC : {{ result.commande.totalTtc }} TND
+          </p>
+          <button class="btn" (click)="reset()">Nouvelle commande</button>
+        } @else {
+          <p><b>Commande impossible</b> — {{ result.message }}</p>
+          @if (result.alternatifs.length > 0) {
+            <table class="grid alt">
+              <thead>
+                <tr>
+                  <th>Fournisseur</th>
+                  <th>Prix</th>
+                  <th>Stock</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (a of result.alternatifs; track a.id) {
+                  <tr>
+                    <td class="name">{{ a.fournisseurNom }}</td>
+                    <td>{{ a.prixAchat }} TND</td>
+                    <td>{{ a.stockDisponible }}</td>
+                    <td class="actions">
+                      <button class="btn gold" (click)="choisirAlternatif(a.id)">Choisir ce fournisseur</button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  @if (loading) {
+    <p class="muted">Chargement…</p>
+  }
+</div>

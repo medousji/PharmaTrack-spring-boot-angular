@@ -1,0 +1,113 @@
+@if (user$ | async; as user) {
+  <aside class="sidebar">
+    <a class="brand" routerLink="/dashboard">
+      <i class="bi bi-capsule-pill"></i> PHARMA TRACK
+    </a>
+
+    <div class="user-card">
+      <div class="user-line">
+        <i class="bi bi-person-circle"></i>
+        <div class="user-meta">
+          <div class="user-name">{{ user.name }}</div>
+          <span class="badge role">{{ roleLabel(user.role) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="group-title">TABLEAU DE BORD</div>
+      <a class="nav-link" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="bi bi-speedometer2"></i> Tableau de Bord
+      </a>
+      @if (user.role !== visiteurRole) {
+        <a class="nav-link" routerLink="/chat" routerLinkActive="active">
+          <i class="bi bi-chat-dots"></i> Messagerie
+        </a>
+      }
+      @if (user.role === adminRole || user.role === pharmacienRole) {
+        <a class="nav-link" routerLink="/assistant" routerLinkActive="active">
+          <i class="bi bi-robot"></i> Assistant IA
+        </a>
+      }
+
+      @if (user.role === adminRole || user.role === pharmacienRole) {
+        <div class="group-title">GESTION</div>
+        <a class="nav-link" routerLink="/medicaments" routerLinkActive="active">
+          <i class="bi bi-capsule"></i> Médicaments
+        </a>
+        <a class="nav-link" routerLink="/lots" routerLinkActive="active">
+          <i class="bi bi-box"></i> Lots
+        </a>
+        @if (user.role === pharmacienRole) {
+          <a class="nav-link" routerLink="/commandes" routerLinkActive="active">
+            <i class="bi bi-cart"></i> Commander
+          </a>
+        }
+        <a class="nav-link" routerLink="/scan" routerLinkActive="active">
+          <i class="bi bi-upc-scan"></i> Scan Code
+        </a>
+        <a class="nav-link" routerLink="/predictions" routerLinkActive="active">
+          <i class="bi bi-robot"></i> Prédictions IA
+        </a>
+        <a class="nav-link" routerLink="/conformite" routerLinkActive="active">
+          <i class="bi bi-shield-check"></i> Conformité ONP
+        </a>
+        <a class="nav-link" routerLink="/alertes" routerLinkActive="active">
+          <i class="bi bi-bell"></i> Alertes
+          @if (unreadAlertes$ | async; as unread) {
+            @if (unread > 0) {
+              <span class="badge count">{{ unread }}</span>
+            }
+          }
+        </a>
+      }
+
+      @if (user.role === fournisseurRole) {
+        <div class="group-title">ESPACE FOURNISSEUR</div>
+        <a class="nav-link" routerLink="/fournisseur" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <i class="bi bi-briefcase"></i> Mon espace
+        </a>
+        <a class="nav-link" routerLink="/fournisseur/commandes" routerLinkActive="active">
+          <i class="bi bi-box"></i> Commandes reçues
+        </a>
+        <a class="nav-link" routerLink="/fournisseur/prix" routerLinkActive="active">
+          <i class="bi bi-tags"></i> Tarifs &amp; stock
+        </a>
+        <a class="nav-link" routerLink="/alertes" routerLinkActive="active">
+          <i class="bi bi-bell"></i> Mes Alertes
+          @if (unreadAlertes$ | async; as unread) {
+            @if (unread > 0) {
+              <span class="badge count">{{ unread }}</span>
+            }
+          }
+        </a>
+      }
+
+      @if (user.role === adminRole) {
+        <div class="group-title">ADMINISTRATION</div>
+        <a class="nav-link" routerLink="/admin/dashboard" routerLinkActive="active">
+          <i class="bi bi-gear"></i> Administration
+        </a>
+        <a class="nav-link" routerLink="/admin/users" routerLinkActive="active">
+          <i class="bi bi-people"></i> Utilisateurs
+        </a>
+        <a class="nav-link" routerLink="/admin/users/pending" routerLinkActive="active">
+          <i class="bi bi-person-check"></i> Approbations
+          @if (pendingCount$ | async; as pending) {
+            @if (pending > 0) {
+              <span class="badge count pending">{{ pending }}</span>
+            }
+          }
+        </a>
+      }
+
+      <div class="group-title">COMPTE</div>
+      <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+        <i class="bi bi-person"></i> Mon Profil
+      </a>
+      <button class="nav-link logout" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i> Déconnexion
+      </button>
+    </nav>
+  </aside>
+}

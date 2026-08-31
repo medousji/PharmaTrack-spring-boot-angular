@@ -1,0 +1,70 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Espace fournisseur</h1>
+      <p class="subtitle">Bonjour {{ user?.name ?? 'cher partenaire' }} — {{ data?.raisonSociale }}</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" routerLink="/fournisseur/commandes">Commandes reçues</a>
+      <a class="btn primary" routerLink="/fournisseur/prix">Gérer mes tarifs</a>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (data) {
+    <div class="kpis">
+      <div class="kpi kpi-gold">
+        <b>{{ data.stats.commandesEncours }}</b>
+        <span>Commandes en cours</span>
+      </div>
+      <div class="kpi kpi-green">
+        <b>{{ data.stats.commandesLivrees }}</b>
+        <span>Commandes livrées</span>
+      </div>
+      <div class="kpi kpi-orange">
+        <b>{{ data.stats.produitsDisponibles }}</b>
+        <span>Produits disponibles</span>
+      </div>
+    </div>
+
+    <h2 class="section-title">Commandes récentes</h2>
+
+    @if (data.dernieresCommandes.length === 0) {
+      <p class="empty-block">Aucune commande reçue pour le moment.</p>
+    } @else {
+      <table class="grid">
+        <thead>
+          <tr>
+            <th>N° commande</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Total TTC</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of data.dernieresCommandes; track c.id) {
+            <tr>
+              <td class="name">{{ c.numeroCommande }}</td>
+              <td class="muted">{{ date(c.dateCommande) }}</td>
+              <td>
+                <app-status-pill [label]="statutLabel(c.statut)" [tone]="statutTone(c.statut)" />
+              </td>
+              <td>{{ c.totalTtc }} TND</td>
+              <td class="actions">
+                <a class="btn" routerLink="/fournisseur/commandes/{{ c.id }}">Voir</a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+
+  @if (loading) {
+    <p class="muted">Chargement…</p>
+  }
+</div>

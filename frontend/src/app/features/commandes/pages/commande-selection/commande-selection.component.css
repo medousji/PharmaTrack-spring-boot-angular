@@ -1,0 +1,69 @@
+.subtitle {
+  margin: 0;
+  color: #9c8a78;
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+input[type="search"] {
+  min-width: 280px;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e8e4da;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table.grid th,
+table.grid td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #f0ebe4;
+  font-size: 14px;
+}
+
+table.grid thead th {
+  background: #f8f5f0;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #9c8a78;
+  border-bottom: 2px solid #d4af37;
+}
+
+table.grid tbody tr:hover {
+  background: #faf7f2;
+}
+
+.name {
+  font-weight: 600;
+  color: #5d4b38;
+}
+
+.muted {
+  color: #9c8a78;
+}
+
+.actions {
+  text-align: right;
+}
+
+/* Bouton doré « Commander » inspiré du style legacy */
+.btn.gold {
+  background: #fff;
+  color: #5d4b38;
+  border: 1px solid #d4af37;
+}
+
+.btn.gold:hover {
+  background: #d4af37;
+  color: #fff;
+}

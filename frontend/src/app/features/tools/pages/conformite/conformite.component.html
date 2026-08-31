@@ -1,0 +1,80 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Conformité ONP</h1>
+      <p>Contrôle réglementaire des fiches médicaments</p>
+    </div>
+    <select [(ngModel)]="filter" class="form-select">
+      <option value="tous">Tous les médicaments</option>
+      <option value="conforme">Conformes</option>
+      <option value="non-conforme">Non conformes</option>
+    </select>
+  </div>
+
+  <div class="cards">
+    <div class="stat">
+      <div class="num">{{ total || '…' }}</div>
+      <div class="lbl">Médicaments contrôlés</div>
+      <div class="bar" [style.width.%]="100"></div>
+    </div>
+    <div class="stat green">
+      <div class="num">{{ total ? conformes : '…' }}</div>
+      <div class="lbl">Conformes</div>
+      <div class="bar" [style.width.%]="score"></div>
+    </div>
+    <div class="stat red">
+      <div class="num">{{ total ? total - conformes : '…' }}</div>
+      <div class="lbl">Non conformes</div>
+    </div>
+    <div class="stat">
+      <div class="num score">{{ total ? score + '%' : '…' }}</div>
+      <div class="lbl">Score global</div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading"><span class="spinner-border spinner-border-sm"></span> Analyse en cours…</div>
+  }
+  @if (error) {
+    <div class="alert gold">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>Code CIP</th>
+            <th>Points</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of shown; track r.medicament.id) {
+            <tr>
+              <td>
+                <a class="med" routerLink="/medicaments/{{ r.medicament.id }}">{{ r.medicament.nomCommercialFr }}</a>
+                <span class="dci">{{ r.medicament.dci }}</span>
+              </td>
+              <td>{{ r.medicament.codeCip }}</td>
+              <td>
+                <div class="pnt-w">
+                  <div class="pnt" [style.width.%]="(r.conformance / r.total) * 100"></div>
+                </div>
+                <span class="pnt-txt">{{ r.conformance }}/{{ r.total }}</span>
+              </td>
+              <td>
+                @if (r.missing.length === 0) {
+                  <app-status-pill label="Conforme" tone="success" />
+                } @else {
+                  <app-status-pill [label]="'Manque : ' + r.missing.slice(0, 2).join(', ')" tone="danger" />
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,11 @@
+<div class="bars">
+  @for (item of items(); track item.label) {
+    <div class="bar-row">
+      <span class="bar-label" [title]="item.label">{{ item.label }}</span>
+      <div class="bar-track">
+        <div class="bar-fill" [style.width.%]="width(item)"></div>
+      </div>
+      <span class="bar-total">{{ item.total }}</span>
+    </div>
+  }
+</div>

@@ -1,0 +1,62 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Scanner un code</h1>
+      <p>Recherchez un médicament par code CIP, code à barres ou nom</p>
+    </div>
+    <i class="bi bi-upc-scan head-icon"></i>
+  </div>
+
+  <div class="scan-box">
+    <div class="scan-frame">
+      <i class="bi bi-qr-code-scan"></i>
+      <input
+        id="code"
+        type="text"
+        placeholder="Entrez le code CIP / code barre…"
+        [(ngModel)]="code"
+        (keyup.enter)="search()"
+        autofocus
+      />
+      <button class="btn btn-scan" (click)="search()" [disabled]="busy || !code.trim()">
+        {{ busy ? 'Recherche…' : 'Scanner' }}
+      </button>
+    </div>
+
+    @if (notFound) {
+      <div class="alert gold">Aucun médicament trouvé pour « {{ code }} ».</div>
+    }
+
+    @if (medicament) {
+      <div class="result-card">
+        <div class="pic">
+          <i class="bi bi-capsule"></i>
+        </div>
+        <div class="info">
+          <div class="row-head">
+            <h2>{{ medicament.nomCommercialFr }}</h2>
+            <app-status-pill [label]="medicament.statut" [tone]="medicamentTone(medicament.statut)" />
+          </div>
+          <div class="meta">
+            <span class="chip">CIP {{ medicament.codeCip }}</span>
+            <span class="chip">{{ medicament.dci }}</span>
+            <span class="chip">{{ medicament.formePharmaceutique }} {{ medicament.dosage }}</span>
+            @if (medicament.codeBarre) {
+              <span class="chip">Code barre {{ medicament.codeBarre }}</span>
+            }
+          </div>
+          <div class="stats">
+            <div><b>{{ medicament.stockActif }}</b><span>Stock</span></div>
+            <div><b>{{ medicament.prixPublic }} TND</b><span>Prix</span></div>
+            @if (medicament.estEnRupture) {
+              <div class="warn"><b>Rupture</b><span>Statut</span></div>
+            }
+          </div>
+          <a class="btn btn-gold" routerLink="/medicaments/{{ medicament.id }}">
+            Voir le détail <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    }
+  </div>
+</div>

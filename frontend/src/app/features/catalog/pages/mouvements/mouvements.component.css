@@ -1,0 +1,23 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e8e4da;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid #f0ece2;
+}
+
+thead th {
+  background: #f6f2ea;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #8b7355;
+}

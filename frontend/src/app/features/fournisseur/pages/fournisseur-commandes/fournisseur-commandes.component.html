@@ -1,0 +1,73 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Commandes reçues</h1>
+      <p class="subtitle">Suivez et expédiez les commandes des pharmacies</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" routerLink="/fournisseur">Tableau de bord</a>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (message) {
+    <p class="ok">{{ message }}</p>
+  }
+
+  <div class="filters">
+    <select [(ngModel)]="statut" (ngModelChange)="page = 0; reload()">
+      <option value="">Tous les statuts</option>
+      @for (s of commandeStatuts; track s) {
+        <option [value]="s">{{ statutLabel(s) }}</option>
+      }
+    </select>
+  </div>
+
+  <table class="grid">
+    <thead>
+      <tr>
+        <th>N° commande</th>
+        <th>Date</th>
+        <th>Statut</th>
+        <th>Produits</th>
+        <th>Total HT</th>
+        <th>Total TTC</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (c of commandes; track c.id) {
+        <tr>
+          <td class="name">{{ c.numeroCommande }}</td>
+          <td class="muted">{{ date(c.dateCommande) }}</td>
+          <td>
+            <app-status-pill [label]="statutLabel(c.statut)" [tone]="statutTone(c.statut)" />
+          </td>
+          <td class="muted">{{ c.lignes.length }}</td>
+          <td>{{ c.totalHt }} TND</td>
+          <td>{{ c.totalTtc }} TND</td>
+          <td class="actions">
+            <a class="btn" routerLink="/fournisseur/commandes/{{ c.id }}">Détail</a>
+            @if (canExpedier(c.statut)) {
+              <button class="btn primary" (click)="expedier(c)">Expédier</button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="7" class="empty">Aucune commande trouvée.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [page]="page"
+    [totalPages]="totalPages"
+    [totalElements]="totalElements"
+    itemLabel="commande(s)"
+    (pageChange)="go($event)"
+  />
+</div>

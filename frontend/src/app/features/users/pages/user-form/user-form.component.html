@@ -1,0 +1,76 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>{{ editId ? 'Modifier l\'utilisateur' : 'Créer un nouvel utilisateur' }}</h1>
+      <p class="subtitle">
+        {{ editId ? 'Mettez à jour le compte et ses permissions' : 'Ajouter un compte à la plateforme' }}
+      </p>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (loading) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <form class="card" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label>Nom complet *</label>
+        <input type="text" formControlName="name" placeholder="Nom complet" />
+      </div>
+
+      <div class="field">
+        <label>Adresse email *</label>
+        <input type="email" formControlName="email" placeholder="exemple@email.com" />
+      </div>
+
+      <div class="field">
+        <label>Mot de passe {{ editId ? '(laisser vide pour conserver)' : '*' }}</label>
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="{{ editId ? '••••••••' : 'Minimum 8 caractères' }}"
+          autocomplete="new-password"
+        />
+      </div>
+
+      <div class="field">
+        <label>Rôle *</label>
+        <select formControlName="role">
+          <option value="pharmacien">Pharmacien</option>
+          <option value="admin">Administrateur</option>
+          <option value="fournisseur">Fournisseur</option>
+          <option value="visiteur">Visiteur</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Statut</label>
+        <select formControlName="status">
+          <option value="active">Actif</option>
+          <option value="inactive">Inactif</option>
+          <option value="suspended">Suspendu</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Pharmacie</label>
+        <select formControlName="pharmacieId">
+          <option value="">— Aucune —</option>
+          @for (p of pharmaciess; track p.id) {
+            <option [value]="p.id">{{ p.nom }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <a class="btn" routerLink="/admin/users">Annuler</a>
+        <button class="btn primary" type="submit" [disabled]="saving || form.invalid">
+          {{ saving ? 'Enregistrement…' : editId ? 'Enregistrer les modifications' : 'Créer l\'utilisateur' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

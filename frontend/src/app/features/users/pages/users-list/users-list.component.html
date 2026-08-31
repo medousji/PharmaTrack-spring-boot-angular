@@ -1,0 +1,115 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Gestion des utilisateurs</h1>
+      <p class="subtitle">Administrez les comptes et les permissions</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" routerLink="/admin/users/stats">Statistiques</a>
+      <a class="btn primary" routerLink="/admin/users/nouveau">Nouvel utilisateur</a>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (message) {
+    <p class="ok">{{ message }}</p>
+  }
+
+  @if (stats) {
+    <div class="kpis">
+      <div class="kpi">
+        <b>{{ stats.total }}</b>
+        <span>Total des comptes</span>
+      </div>
+      <div class="kpi kpi-pending">
+        <b>{{ stats.enAttente }}</b>
+        <span>En attente d'approbation</span>
+      </div>
+      <div class="kpi kpi-gold">
+        <b>{{ stats.admins }}</b>
+        <span>Administrateurs</span>
+      </div>
+      <div class="kpi kpi-green">
+        <b>{{ stats.pharmaciens }}</b>
+        <span>Pharmaciens</span>
+      </div>
+      <div class="kpi kpi-orange">
+        <b>{{ stats.fournisseurs }}</b>
+        <span>Fournisseurs</span>
+      </div>
+    </div>
+  }
+
+  <div class="filters">
+    <input
+      type="search"
+      placeholder="Rechercher (nom, email)…"
+      [(ngModel)]="search"
+      (ngModelChange)="onSearchChange($event)"
+    />
+    <select [(ngModel)]="role" (ngModelChange)="page = 0; reload()">
+      <option value="">Tous les rôles</option>
+      <option value="admin">Administrateurs</option>
+      <option value="pharmacien">Pharmaciens</option>
+      <option value="fournisseur">Fournisseurs</option>
+      <option value="visiteur">Visiteurs</option>
+    </select>
+    <select [(ngModel)]="statut" (ngModelChange)="page = 0; reload()">
+      <option value="">Tous les statuts</option>
+      <option value="active">Actif</option>
+      <option value="inactive">Inactif</option>
+      <option value="suspended">Suspendu</option>
+    </select>
+  </div>
+
+  <table class="grid">
+    <thead>
+      <tr>
+        <th>Utilisateur</th>
+        <th>Email</th>
+        <th>Rôle</th>
+        <th>Statut</th>
+        <th>Pharmacie</th>
+        <th>Créé le</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (u of users; track u.id) {
+        <tr>
+          <td>
+            <span class="name">{{ u.name }}</span>
+            @if (u.id === currentUserId) {
+              <span class="badge badge-self">Vous</span>
+            }
+          </td>
+          <td class="muted">{{ u.email }}</td>
+          <td><span class="badge badge-{{ u.role }}">{{ roleLabel(u.role) }}</span></td>
+          <td><span class="badge badge-{{ u.status }}">{{ statusLabel(u.status) }}</span></td>
+          <td class="muted">{{ u.pharmacieNom ?? '—' }}</td>
+          <td class="muted">{{ createdDate(u.createdAt) }}</td>
+          <td class="actions">
+            <a class="btn" routerLink="/admin/users/{{ u.id }}/modifier">Modifier</a>
+            @if (u.id !== currentUserId) {
+              <button class="btn danger" (click)="remove(u)">Supprimer</button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="7" class="empty">Aucun utilisateur trouvé.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [page]="page"
+    [totalPages]="totalPages"
+    [totalElements]="totalElements"
+    itemLabel="utilisateur(s)"
+    (pageChange)="go($event)"
+  />
+</div>

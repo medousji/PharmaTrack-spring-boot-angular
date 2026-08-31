@@ -1,0 +1,67 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e8e4da;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid #f0ece2;
+  vertical-align: top;
+}
+
+thead th {
+  background: #f6f2ea;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #8b7355;
+}
+
+.stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.stat {
+  background: #fff;
+  border: 1px solid #e8e4da;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 13px;
+}
+
+.stat b {
+  margin-right: 0.35rem;
+}
+
+.n-critique {
+  color: #dc2626;
+}
+
+.n-eleve {
+  color: #c2410c;
+}
+
+.n-moyen {
+  color: #8a6d1f;
+}
+
+.n-faible {
+  color: #6b5741;
+}
+
+.unread {
+  margin-left: 0.4rem;
+}
+
+.actions {
+  gap: 0.4rem;
+}

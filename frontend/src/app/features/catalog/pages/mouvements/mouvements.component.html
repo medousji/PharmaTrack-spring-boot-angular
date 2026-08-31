@@ -1,0 +1,69 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Registre des mouvements</h1>
+    <a class="btn" routerLink="/medicaments">← Catalogue</a>
+  </div>
+
+  <div class="filters">
+    @if (!lotId) {
+      <input type="text" placeholder="ID du lot" [(ngModel)]="lotId" (ngModelChange)="reload()" />
+    }
+    @if (lotId) {
+      <span class="muted">Lot : {{ lotId }}</span>
+    }
+    <select [(ngModel)]="type" (ngModelChange)="reload()">
+      <option value="">Tous types</option>
+      <option value="entree">Entrée</option>
+      <option value="sortie">Sortie</option>
+      <option value="ajustement">Ajustement</option>
+    </select>
+    <input type="date" [(ngModel)]="from" (ngModelChange)="reload()" />
+    <span class="muted">→</span>
+    <input type="date" [(ngModel)]="to" (ngModelChange)="reload()" />
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Lot</th>
+        <th>Quantité</th>
+        <th>Avant</th>
+        <th>Après</th>
+        <th>Référence</th>
+        <th>Motif</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (mv of items; track mv.id) {
+        <tr>
+          <td>{{ mv.createdAt | date: 'short' }}</td>
+          <td><app-status-pill [label]="mv.type" [tone]="mouvementTone(mv.type)" /></td>
+          <td class="muted">{{ mv.lotId }}</td>
+          <td>{{ mv.quantite }}</td>
+          <td>{{ mv.quantiteAvant }}</td>
+          <td><strong>{{ mv.quantiteApres }}</strong></td>
+          <td>{{ mv.reference ?? '—' }}</td>
+          <td>{{ mv.motif ?? '—' }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8" class="empty">Aucun mouvement.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <app-pagination
+    [page]="page"
+    [totalPages]="totalPages"
+    [totalElements]="totalElements"
+    itemLabel="mouvement(s)"
+    (pageChange)="go($event)"
+  />
+</div>

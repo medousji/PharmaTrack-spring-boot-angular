@@ -1,0 +1,26 @@
+<div class="auth-page">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-card" novalidate>
+    <h1 class="auth-title">Connexion</h1>
+    <p class="auth-sub">PharmaTrack — Back office</p>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="vous@pharmacie.ma" />
+    </div>
+
+    <div class="field">
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" formControlName="password" placeholder="••••••••" />
+    </div>
+
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+
+    <button type="submit" class="btn primary" [disabled]="form.invalid || loading">
+      {{ loading ? 'Connexion…' : 'Se connecter' }}
+    </button>
+
+    <p class="auth-link">Pas encore de compte ? <a routerLink="/register">S&apos;inscrire</a></p>
+  </form>
+</div>

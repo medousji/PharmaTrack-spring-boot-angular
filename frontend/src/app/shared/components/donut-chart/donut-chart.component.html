@@ -1,0 +1,22 @@
+<div class="donut">
+  <svg class="ring" viewBox="0 0 100 100" role="img">
+    @for (segment of segments(); track segment.key) {
+      <circle
+        cx="50" cy="50" r="40" fill="none"
+        [attr.stroke]="segment.color" stroke-width="18"
+        [attr.stroke-dasharray]="segment.dasharray"
+        [attr.stroke-dashoffset]="segment.dashoffset"
+        transform="rotate(-90 50 50)"
+      />
+    }
+  </svg>
+  <div class="count">{{ total() }}</div>
+</div>
+<div class="legend">
+  @for (item of items(); track item.label; let index = $index) {
+    <span class="legend-item">
+      <span class="dot" [style.background]="palette()[index % palette().length]"></span>
+      {{ item.label }} <b>{{ item.total }}</b>
+    </span>
+  }
+</div>

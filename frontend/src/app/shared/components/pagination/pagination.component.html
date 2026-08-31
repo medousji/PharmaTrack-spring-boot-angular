@@ -1,0 +1,9 @@
+<div class="pager">
+  <span class="muted">
+    Page {{ page() + 1 }} / {{ totalPages() || 1 }} — {{ totalElements() }} {{ itemLabel() }}
+  </span>
+  <div>
+    <button class="btn" [disabled]="!canPrev()" (click)="prev()">‹ Précédent</button>
+    <button class="btn" [disabled]="!canNext()" (click)="next()">Suivant ›</button>
+  </div>
+</div>

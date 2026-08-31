@@ -1,0 +1,97 @@
+<div class="assistant-root">
+  <header class="chat-header">
+    <div class="chat-header-main">
+      <div class="bot-avatar">🤖</div>
+      <div>
+        <h1>Assistant Pharma</h1>
+        <p>Votre assistant IA pour la gestion des médicaments</p>
+      </div>
+      <div class="chat-header-actions">
+        <button class="btn export" (click)="imprimer()" title="Exporter l'historique en PDF">PDF</button>
+        <span class="badge-online">● En ligne</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="chat-card">
+    <div #chatBox class="chat-container">
+      @if (error && items.length === 0) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <div class="message bot">
+        <div class="message-bubble bot" [innerHTML]="greeting"></div>
+      </div>
+
+      @for (item of items; track $index) {
+        <div class="message user">
+          <div class="message-bubble user">{{ item.question }}</div>
+        </div>
+        <div class="message bot">
+          @if (typing && $last) {
+            <div class="typing-indicator">
+              <span></span><span></span><span></span>
+            </div>
+          } @else {
+            <div class="message-bubble bot" [innerHTML]="format(item.reponse)"></div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="chips">
+      @for (s of suggestions; track s.message) {
+        <button class="suggestion-chip" (click)="ask(s.message)">{{ s.label }}</button>
+      }
+    </div>
+
+    <div class="composer">
+      <input
+        type="text"
+        [(ngModel)]="draft"
+        placeholder="Tapez votre message…"
+        (keydown.enter)="send()"
+      />
+      <button class="btn send" (click)="send()" [disabled]="typing || !draft.trim()">
+        Envoyer
+      </button>
+    </div>
+
+    @if (items.length > 0) {
+      <details class="history">
+        <summary>📜 Historique des conversations ({{ items.length }})</summary>
+        <div class="history-list">
+          @for (item of items; track $index) {
+            <div class="history-item">
+              <div><strong>Vous :</strong> {{ item.question }}</div>
+              <div><strong>Assistant :</strong> {{ item.reponse }}</div>
+              <div class="date">{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+          }
+        </div>
+      </details>
+    }
+  </div>
+
+  <div class="print-area">
+    <div class="print-header">
+      <h1>Pharma Track - Assistant IA</h1>
+      <p>Historique des conversations de {{ userName }}</p>
+      <p>Généré le {{ today }}</p>
+    </div>
+    @for (item of items; track $index) {
+      <div class="print-conv">
+        <div class="print-question">
+          <strong>❓ Vous :</strong> {{ item.question }}
+          <div class="print-date">{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+        <div class="print-reponse">
+          <strong>🤖 Assistant :</strong> <span [innerHTML]="format(item.reponse)"></span>
+        </div>
+      </div>
+    }
+    <div class="print-footer">
+      <p>Document généré automatiquement par Pharma Track</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="page thread-page">
+  <div class="thread-head">
+    <a class="btn back" routerLink="/chat">← Messagerie</a>
+    @if (thread) {
+      <div class="thread-title">
+        <h1>{{ thread.contactNom }}</h1>
+        <span class="role">{{ roleLabel(thread.contactRole) }}</span>
+      </div>
+    }
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (thread) {
+    <div class="messages">
+      @for (m of thread.messages; track m.id) {
+        <div class="bubble-wrap" [class.mine]="mine(m)">
+          <div class="bubble" [class.mine]="mine(m)">
+            <div class="bubble-content">{{ m.message }}</div>
+            <div class="bubble-meta">
+              <span class="author">{{ m.expediteurNom }}</span>
+              <span class="time">{{ m.createdAt | date: 'dd/MM HH:mm' }}</span>
+              @if (mine(m)) {
+                <span class="read">{{ m.estLu ? 'lu' : 'envoyé' }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <p class="empty">Aucun message. Lancez la conversation !</p>
+      }
+    </div>
+
+    <div class="composer">
+      <textarea
+        rows="2"
+        [(ngModel)]="draft"
+        placeholder="Écrire un message…"
+        (keydown.enter)="onEnter($event)"
+      ></textarea>
+      <button class="btn primary send" (click)="send()" [disabled]="sending || !draft.trim()">
+        Envoyer
+      </button>
+    </div>
+    @if (sendError) {
+      <p class="error">{{ sendError }}</p>
+    }
+  }
+</div>

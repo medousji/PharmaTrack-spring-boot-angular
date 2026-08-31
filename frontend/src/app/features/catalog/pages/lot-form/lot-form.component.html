@@ -1,0 +1,120 @@
+<div class="page page--form">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <a routerLink="/lots"><i class="bi bi-arrow-left"></i> Lots</a>
+      </div>
+      <h1><i class="bi bi-box-seam"></i> Réceptionner un lot</h1>
+      <p>Ajoutez un nouveau lot au stock de la pharmacie</p>
+    </div>
+  </div>
+
+  @if (loadingMedicaments) {
+    <section class="loading-section">
+      <span class="spinner-border spinner-border-sm"></span> Chargement des médicaments…
+    </section>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <section>
+        <h2><i class="bi bi-capsule-pill"></i> Médicament</h2>
+        <div class="row">
+          @if (medicamentId) {
+            <div class="field medicament-fixed">
+              <label>Médicament</label>
+              <input [value]="medicamentLabel" disabled />
+              <p class="field-note">Lot rattaché au médicament sélectionné.</p>
+            </div>
+          } @else {
+            <div class="field">
+              <label for="medicamentId">Médicament *</label>
+              <select id="medicamentId" formControlName="medicamentId">
+                <option value="">— Sélectionner un médicament —</option>
+                @for (m of medicaments; track m.id) {
+                  <option [value]="m.id">{{ m.nomCommercialFr }}</option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section>
+        <h2><i class="bi bi-receipt"></i> Détails du lot</h2>
+        <div class="row">
+          <div class="field">
+            <label for="numeroLot">N° de lot *</label>
+            <input id="numeroLot" formControlName="numeroLot" placeholder="Ex : LOT-2026-001" />
+          </div>
+          <div class="field">
+            <label for="fournisseurNom">Fournisseur</label>
+            <input id="fournisseurNom" formControlName="fournisseurNom" />
+          </div>
+          <div class="field">
+            <label for="numeroFacture">N° facture</label>
+            <input id="numeroFacture" formControlName="numeroFacture" />
+          </div>
+          <div class="field">
+            <label for="emplacement">Emplacement</label>
+            <input id="emplacement" formControlName="emplacement" placeholder="Ex : A1-02" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2><i class="bi bi-calendar-event"></i> Dates &amp; quantité</h2>
+        <div class="row">
+          <div class="field">
+            <label for="dateReception">Date de réception</label>
+            <input id="dateReception" type="date" formControlName="dateReception" />
+          </div>
+          <div class="field">
+            <label for="dateFabrication">Date de fabrication</label>
+            <input id="dateFabrication" type="date" formControlName="dateFabrication" />
+          </div>
+          <div class="field">
+            <label for="datePeremption">Date de péremption *</label>
+            <input id="datePeremption" type="date" formControlName="datePeremption" />
+          </div>
+          <div class="field">
+            <label for="quantiteInitiale">Quantité initiale *</label>
+            <input id="quantiteInitiale" type="number" min="1" formControlName="quantiteInitiale" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2><i class="bi bi-coin"></i> Prix (TND)</h2>
+        <div class="row">
+          <div class="field">
+            <label for="prixAchat">Prix d'achat *</label>
+            <input id="prixAchat" type="number" step="0.01" min="0" formControlName="prixAchat" />
+          </div>
+          <div class="field">
+            <label for="prixVente">Prix de vente *</label>
+            <input id="prixVente" type="number" step="0.01" min="0" formControlName="prixVente" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2><i class="bi bi-chat-left-text"></i> Observations</h2>
+        <div class="field">
+          <label for="observations">Notes (optionnel)</label>
+          <textarea id="observations" formControlName="observations"></textarea>
+        </div>
+      </section>
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <div class="actions">
+        <a class="btn-ghost" [routerLink]="backLink">Annuler</a>
+        <button type="submit" class="btn-gold" [disabled]="saving || form.invalid">
+          <i class="bi bi-check2-circle"></i>
+          {{ saving ? 'Enregistrement…' : 'Réceptionner le lot' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

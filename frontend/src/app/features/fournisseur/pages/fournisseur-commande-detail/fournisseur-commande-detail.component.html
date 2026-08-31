@@ -1,0 +1,87 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Commande {{ commande?.numeroCommande }}</h1>
+      <p class="subtitle">Détail de la commande reçue</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" routerLink="/fournisseur/commandes">Retour aux commandes</a>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (message) {
+    <p class="ok">{{ message }}</p>
+  }
+
+  @if (commande) {
+    <div class="meta">
+      <div class="meta-item">
+        <span>Statut</span>
+        <app-status-pill [label]="statutLabel(commande.statut)" [tone]="statutTone(commande.statut)" />
+      </div>
+      <div class="meta-item">
+        <span>Date de commande</span>
+        <b>{{ date(commande.dateCommande) }}</b>
+      </div>
+      <div class="meta-item">
+        <span>Livraison prévue</span>
+        <b>{{ commande.dateLivraisonPrevue ? date(commande.dateLivraisonPrevue) : '—' }}</b>
+      </div>
+      <div class="meta-item">
+        <span>Total HT</span>
+        <b>{{ commande.totalHt }} TND</b>
+      </div>
+      <div class="meta-item">
+        <span>Total TTC</span>
+        <b>{{ commande.totalTtc }} TND</b>
+      </div>
+      @if (canExpedier(commande.statut)) {
+        <button class="btn primary" (click)="expedier()">Expédier la commande</button>
+      }
+    </div>
+
+    <h2 class="section-title">Lignes de la commande</h2>
+
+    <table class="grid">
+      <thead>
+        <tr>
+          <th>Médicament</th>
+          <th>Qté commandée</th>
+          <th>Qté demandée</th>
+          <th>Stock avant</th>
+          <th>Stock restant</th>
+          <th>Qté manquante</th>
+          <th>Qté livrable</th>
+          <th>Prix unitaire</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (l of commande.lignes; track l.id) {
+          <tr>
+            <td class="name">{{ l.medicamentNom }}</td>
+            <td>{{ l.quantite }}</td>
+            <td class="muted">{{ l.quantiteDemandee }}</td>
+            <td class="muted">{{ l.stockAvant }}</td>
+            <td>{{ l.stockRestant }}</td>
+            <td>{{ l.quantiteManquante }}</td>
+            <td>{{ l.quantiteLivrable }}</td>
+            <td>{{ l.prixUnitaire }} TND</td>
+            <td>{{ l.totalLigne }} TND</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="9" class="empty">Aucune ligne.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (loading) {
+    <p class="muted">Chargement…</p>
+  }
+</div>

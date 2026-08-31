@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Mon Profil</h1>
+      <p>Informations de votre compte PHARMA TRACK</p>
+    </div>
+  </div>
+
+  @if (user) {
+    <div class="layout">
+      <div class="card ident">
+        <div class="avatar"><i class="bi bi-person-fill"></i></div>
+        <h2>{{ user.name }}</h2>
+        <span class="badge role">{{ roleLabel() }}</span>
+        <div class="chips">
+          @if (user.isApproved) {
+            <span class="chip ok"><i class="bi bi-check-circle"></i> Compte approuvé</span>
+          } @else {
+            <span class="chip warn"><i class="bi bi-hourglass"></i> En attente d'approbation</span>
+          }
+          @if (user.pharmacieNom) {
+            <span class="chip"><i class="bi bi-shop"></i> {{ user.pharmacieNom }}</span>
+          }
+        </div>
+        <button class="btn-logout" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Déconnexion
+        </button>
+      </div>
+
+      <div class="card info">
+        <h3><i class="bi bi-person-lines-fill"></i> Informations</h3>
+        <dl>
+          <dt>Nom complet</dt>
+          <dd>{{ user.name }}</dd>
+          <dt>Adresse e-mail</dt>
+          <dd>{{ user.email }}</dd>
+          <dt>Rôle</dt>
+          <dd>{{ roleLabel() }}</dd>
+          <dt>Statut</dt>
+          <dd>
+            <span class="stt {{ user.status === 'active' ? 'ok' : 'warn' }}">{{ user.status }}</span>
+          </dd>
+          @if (user.createdAt) {
+            <dt>Membre depuis</dt>
+            <dd>{{ user.createdAt | date: 'dd MMMM yyyy' }}</dd>
+          }
+          @if (user.lastLoginAt) {
+            <dt>Dernière connexion</dt>
+            <dd>{{ user.lastLoginAt | date: 'dd MMMM yyyy, HH:mm' }}</dd>
+          }
+        </dl>
+        <a class="btn-gold" routerLink="/dashboard"><i class="bi bi-arrow-left"></i> Retour</a>
+      </div>
+    </div>
+  }
+</div>
